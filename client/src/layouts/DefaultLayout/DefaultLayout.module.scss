@@ -1,8 +1,11 @@
 .wrapper {
-    margin: 0 auto; /* Căn giữa */
+    user-select: none;
 }
 .container {
+    margin: 0;
+    height: 150vh;
     display: flex;
+    overflow: hidden;
     margin-top: 64px;
     color: #fff;
     &::-webkit-scrollbar {
@@ -11,9 +14,15 @@
     }
 }
 .content {
-    margin-left: 29vw;
+    flex-grow: 1;
+    overflow-x: hidden;
+    white-space: nowrap;
+    margin: 0 8px;
     width: 100%;
     border-radius: 10px;
 }
-.footer {
+.resizer {
+    width: 5px;
+    cursor: ew-resize;
+    height: 100%;
 }

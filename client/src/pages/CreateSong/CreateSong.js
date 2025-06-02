@@ -19,13 +19,6 @@ function CreateSong() {
         e.preventDefault();
 
         try {
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('composer', composer);
-            formData.append('imageSong', imageSong);
-            formData.append('duration', duration);
-            formData.append('url', url); // file
-
             const response = await api.post(
                 `songs/artist/add-song/${id}`,
                 { name, composer, imageSong, duration, url },

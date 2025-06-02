@@ -14,8 +14,8 @@ class HomeController {
   }
   async randomArtist(req, res) {
     try {
-      let limit = parseInt(req.params.limit) || 6;
-      limit = limit > 20 ? 20 : limit;
+      let limit = parseInt(req.params.limit) || 10;
+      // limit = limit > 20 ? 20 : limit;
       const artist = await Artist.aggregate([{ $sample: { size: limit } }]);
       res.status(200).json(artist);
     } catch (err) {
@@ -24,11 +24,11 @@ class HomeController {
   }
   async showRapper(req, res) {
     try {
-      let limit = parseInt(req.params.limit) || 6;
-      limit = limit > 20 ? 20 : limit;
+      // let limit = parseInt(req.params.limit) || 6;
+      // limit = limit > 20 ? 20 : limit;
       const artist = await Artist.aggregate([
         { $match: { genre: "Rapper" } },
-        { $limit: limit },
+        // { $limit: limit },
       ]);
       res.status(200).json(artist);
     } catch (err) {
@@ -37,11 +37,11 @@ class HomeController {
   }
   async showSinger(req, res) {
     try {
-      let limit = parseInt(req.params.limit) || 6;
-      limit = limit > 20 ? 20 : limit;
+      // let limit = parseInt(req.params.limit) || 6;
+      // limit = limit > 20 ? 20 : limit;
       const artist = await Artist.aggregate([
         { $match: { genre: "Singer" } },
-        { $limit: limit },
+        // { $limit: limit },
       ]);
       res.status(200).json(artist);
     } catch (err) {

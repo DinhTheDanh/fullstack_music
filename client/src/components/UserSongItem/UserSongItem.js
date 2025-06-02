@@ -12,7 +12,7 @@ import { AccessIcon } from '../Icon';
 import style from './UserSongItem.module.scss';
 const cx = classNames.bind(style);
 
-function UserSongItem({ data, refSong, refArtist }) {
+function UserSongItem({ data, refSong, refArtist, refSongTextLike, refArtistText }) {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [activeMenu, setActiveMenu] = useState(null);
     const { setDataFollow } = useContext(UpdateDataSidebarContext);
@@ -61,7 +61,7 @@ function UserSongItem({ data, refSong, refArtist }) {
                     className={(nav) => cx('content-item', { active: nav.isActive })}
                 >
                     <Image small src={'https://misc.scdn.co/liked-songs/liked-songs-64.png'} />
-                    <div className={cx('content-head')}>
+                    <div ref={refSongTextLike} className={cx('content-head')}>
                         <div className={cx('content-text', { active: true })}>Bài hát đã thích</div>
                         <div className={cx('content-desc')}>
                             Danh sách phát
@@ -89,7 +89,10 @@ function UserSongItem({ data, refSong, refArtist }) {
                                     className={(nav) => cx('content-item', { active: nav.isActive })}
                                 >
                                     <Image border small src={artist?.imageArtist} />
-                                    <div className={cx('content-head')}>
+                                    <div
+                                        ref={(el) => (refArtistText.current[index] = el)}
+                                        className={cx('content-head')}
+                                    >
                                         <div className={cx('content-text')}>{artist?.name}</div>
                                         <div className={cx('content-desc')}>{artist?.role}</div>
                                     </div>

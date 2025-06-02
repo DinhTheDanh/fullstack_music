@@ -51,10 +51,10 @@ function SignUp() {
         <div>
             <div className={cx('wrapper')}>
                 <div className={cx('content')}>
-                    <div className={cx('header')}>
+                    <Link to={config.routes.home} className={cx('header')}>
                         <Image src={img} border small />
                         <span className={cx('header-text')}>Đăng ký vào Spotify</span>
-                    </div>
+                    </Link>
                     {!!message && (
                         <div className={cx('errors-res')}>
                             <FontAwesomeIcon

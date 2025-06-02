@@ -2,8 +2,13 @@
     background-color: var(--color-primary);
     display: flex;
     justify-content: space-around;
-    padding: 40px 0 87px 0;
+    padding: 40px 20px 87px;
     border-top: 1px solid #cccccc3e;
+    flex-flow: row wrap;
+}
+.item {
+    width: 190px;
+    margin-bottom: 20px;
 }
 .text-head {
     color: #fff;
@@ -14,6 +19,7 @@
 .text-p {
     color: #b3b3b3;
     cursor: pointer;
+    white-space: normal;
 }
 .icon {
     margin-right: 10px;

@@ -1,7 +1,6 @@
 const Song = require("../models/Song");
 const User = require("../models/User");
 const cloudinary = require("../../utils/cloudinary");
-const { result } = require("lodash");
 
 class SongsController {
   async showSongsByArtist(req, res) {
@@ -20,7 +19,6 @@ class SongsController {
       const { artistId } = req.params;
       const { name, composer, imageSong, duration } = req.body;
       const file = req.file;
-      console.log(req.file);
 
       if (!file) {
         return res.status(400).json({ err: "No audio file uploaded" });

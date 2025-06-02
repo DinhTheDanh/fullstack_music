@@ -9,7 +9,15 @@ const {
   loginValidation,
 } = require("../validations/authValidation");
 const passport = require("passport");
+const upload = require("../middleware/upload");
 
+// [Post] /update-user
+router.post(
+  "/update-user",
+  upload.single("url"),
+  authentication,
+  UserController.updateProfileUser
+);
 // [Post] /register
 router.post("/register", registerValidation, UserController.register);
 // [Post] /login
@@ -22,6 +30,10 @@ router.post(
 );
 // [Post] /add-follow
 router.post("/add-follow", authentication, UserController.addFollow);
+// [Post] /forgot-password
+router.post("/forgot-password", UserController.forgotPassword);
+// [Post] /forgot-password
+router.post("/reset-password/:token", UserController.resetPassword);
 
 // [Get] /logout
 router.get("/logout", UserController.logout);

@@ -1,8 +1,7 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
-import { AppContext } from '~/context/AppProvider';
 import api from '~/ultis/httpsRequest';
 import style from './SignIn.module.scss';
 import Image from '~/components/Image';
@@ -19,7 +18,6 @@ const cx = classNames.bind(style);
 
 function SignIn() {
     const navigate = useNavigate();
-    const { setUser } = useContext(AppContext);
     const [message, setMessage] = useState('');
 
     const {
@@ -44,7 +42,6 @@ function SignIn() {
             const response = await api.post('auth/login', data, {
                 withCredentials: true,
             });
-            setUser(response.data.user.role); // hoặc response.data.user
             navigate('/');
         } catch (error) {
             setMessage(error.response.data.message);
@@ -55,10 +52,10 @@ function SignIn() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('content')}>
-                <div className={cx('header')}>
+                <Link to={config.routes.home} className={cx('header')}>
                     <Image src={img} border small />
                     <span className={cx('header-text')}>Đăng nhập vào Spotify</span>
-                </div>
+                </Link>
                 {!!message && (
                     <div className={cx('errors-res')}>
                         <FontAwesomeIcon
@@ -119,7 +116,10 @@ function SignIn() {
                     <button className={cx('button-form')} type="submit">
                         Đăng nhập
                     </button>
-                    <Link className={cx('text-bottom', 'd-flex justify-content-center mt-5')}>
+                    <Link
+                        to={config.routes.forgotPassword}
+                        className={cx('text-bottom', 'd-flex justify-content-center mt-5')}
+                    >
                         Quên mật khẩu của bạn?
                     </Link>
                     <div className={cx('footer')}>

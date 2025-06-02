@@ -2,9 +2,8 @@
     margin-bottom: 20px;
     height: 258px;
     border-radius: 8px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
+    // overflow-x: auto;
+    // scrollbar-width: none;
     &::-webkit-scrollbar {
         display: none;
     }

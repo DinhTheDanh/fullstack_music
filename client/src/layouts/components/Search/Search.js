@@ -1,7 +1,7 @@
 import Tippy from '@tippyjs/react';
 import classNames from 'classnames/bind';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 
 import { BrowseActiveIcon, BrowseIcon, SearchIcon } from '~/components/Icon';
@@ -27,20 +27,31 @@ function Search() {
     }, [updateSearchURL, query]);
 
     return (
-        <div className={cx('search')}>
-            <SearchIcon className={cx('search-icon')} />
-            <input
-                placeholder="Bạn muốn phát nội dung gì?"
-                className={cx('input')}
-                onChange={(e) => setQuery(e.target.value)}
-                type="text"
-                value={query}
-            />
-            <Tippy delay={[500, 300]} placement="bottom" content="Duyệt tìm kiếm">
-                <div>
-                    <MenuItem icon={<BrowseIcon />} activeIcon={<BrowseActiveIcon />} to={config.routes.search} />
-                </div>
-            </Tippy>
+        <div className={cx('wrapper')}>
+            <div className={cx('search', 'd-none d-md-flex')}>
+                <SearchIcon className={cx('search-icon')} />
+                <input
+                    placeholder="Bạn muốn phát nội dung gì?"
+                    className={cx('input')}
+                    onChange={(e) => setQuery(e.target.value)}
+                    type="text"
+                    value={query}
+                />
+                <Tippy
+                    delay={[500, 300]}
+                    className={cx('d-none d-md-block')}
+                    placement="bottom"
+                    content="Duyệt tìm kiếm"
+                >
+                    <div>
+                        <MenuItem icon={<BrowseIcon />} activeIcon={<BrowseActiveIcon />} to={config.routes.search} />
+                    </div>
+                </Tippy>
+            </div>
+
+            <Link to={config.routes.search}>
+                <SearchIcon className={cx('search-icon', 'd-md-none float-right')} />
+            </Link>
         </div>
     );
 }

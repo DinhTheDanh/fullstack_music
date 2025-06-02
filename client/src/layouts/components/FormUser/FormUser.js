@@ -14,6 +14,7 @@ const cx = classNames.bind(style);
 const menuItem = [
     {
         label: 'Hồ sơ',
+        href: config.routes.profile,
     },
     {
         label: 'Cài đặt',

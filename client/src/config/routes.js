@@ -1,7 +1,6 @@
 const routes = {
     home: '/',
-    following: '/following',
-    profile: '/profile/:nickname',
+    profile: '/profile',
     search: '/search',
     signup: '/signup',
     login: '/login',
@@ -11,5 +10,7 @@ const routes = {
     updateArtist: '/admin/artist/artist-update/:id',
     profileArtist: '/artist/:id',
     collectionTrack: '/collection/tracks',
+    forgotPassword: '/forgot-password',
+    resetPassword: '/reset-password/:token',
 };
 export default routes;

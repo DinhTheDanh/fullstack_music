@@ -19,7 +19,7 @@ passport.use(
         if (!user) {
           user = await User.create({
             googleId: profile.id,
-            name: profile.displayName,
+            username: profile.displayName,
             email: profile.emails[0].value,
             avatar: profile.photos[0].value,
           });
@@ -45,7 +45,7 @@ passport.use(
         if (!user) {
           user = await User.create({
             facebookId: profile.id,
-            name: profile.displayName,
+            username: profile.displayName,
             email: profile.emails ? profile.emails[0].value : "",
             avatar: `https://graph.facebook.com/${profile.id}/picture?type=large&access_token=${accessToken}`,
           });

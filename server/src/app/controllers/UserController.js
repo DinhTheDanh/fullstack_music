@@ -3,7 +3,10 @@ const Artist = require("../models/Artist");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Song = require("../models/Song");
-const { validationResult } = require("express-validator");
+const { validationResult, Result } = require("express-validator");
+const sendEmail = require("../../utils/sendEmail");
+const cloudinary = require("../../utils/cloudinary");
+
 require("dotenv").config();
 class UserController {
   // [Get] all
@@ -86,6 +89,47 @@ class UserController {
       });
     });
   }
+  // [POST] forgot-password
+  async forgotPassword(req, res) {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "15m",
+    });
+
+    const resetLink = `http://localhost:3001/reset-password/${token}`;
+
+    await sendEmail(
+      user.email,
+      "Reset Password",
+      `Click vào link đê reset mật khẩu ${resetLink}`
+    );
+    res.json({ message: "Check your email to reset password" });
+  }
+
+  async resetPassword(req, res) {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      user.password = password;
+      await User.save();
+
+      res.json({ message: "Password updated successfully" });
+    } catch (err) {}
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
   // [Get] me
   async me(req, res) {
     const user = await User.findById(req.user.id);
@@ -101,6 +145,44 @@ class UserController {
       return res.status(404).json({ message: "User not found" });
     }
     res.json({ message: "This is admin", user: user });
+  }
+  // [POST] Update profile user
+  async updateProfileUser(req, res) {
+    try {
+      const user = await User.findById(req.user.id);
+      const name = req.body.name;
+      const file = req.file;
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const streamUpload = (fileBuffet) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              resource_type: "image",
+              folder: "images",
+            },
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            }
+          );
+          stream.end(fileBuffet);
+        });
+      };
+      const result = await streamUpload(file.buffer);
+
+      const updateUser = await User.updateOne(
+        { _id: user._id },
+        { avatar: result.secure_url, username: name }
+      );
+      res.status(200).json({
+        message: "User updated successfully",
+        user: User,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
   // [Post] Favorite Song
   async addFavoriteSong(req, res) {

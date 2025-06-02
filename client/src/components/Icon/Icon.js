@@ -114,7 +114,7 @@ export const LibraryIcon = ({ className, width = '2.4rem', height = '2.4rem', ..
         <path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.464a1 1 0 0 0-.5-.866l-6-3.464zM9 2a1 1 0 0 0-1 1v18a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1z"></path>
     </svg>
 );
-export const PlusSignIcon = ({ ref, className, width = '1.6rem', height = '1.6rem', ...props }) => (
+export const PlusSignIcon = forwardRef(({ className, width = '1.6rem', height = '1.6rem', ...props }, ref) => (
     <svg
         ref={ref}
         width={width}
@@ -128,7 +128,7 @@ export const PlusSignIcon = ({ ref, className, width = '1.6rem', height = '1.6re
     >
         <path d="M15.25 8a.75.75 0 0 1-.75.75H8.75v5.75a.75.75 0 0 1-1.5 0V8.75H1.5a.75.75 0 0 1 0-1.5h5.75V1.5a.75.75 0 0 1 1.5 0v5.75h5.75a.75.75 0 0 1 .75.75z"></path>
     </svg>
-);
+));
 export const ShuffleIcon = forwardRef(({ className, width = '1.6rem', height = '1.6rem', ...props }, ref) => {
     return (
         <svg

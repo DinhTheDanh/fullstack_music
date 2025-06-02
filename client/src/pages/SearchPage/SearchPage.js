@@ -62,7 +62,7 @@ function SearchPage() {
             <div className={cx('container')}>
                 <div className={cx('result-track')}>
                     <div className={cx('container-text-head')}>Kết quả hàng đầu </div>
-                    <Link to={`/artist/${data[0]?.name}` ?? query}>
+                    <Link to={`/artist/${data[0]?._id}` ?? query}>
                         <div className={cx('result-track_item')}>
                             {data[0] !== dataArtist[0] ? (
                                 <Image src={data[0]?.imageSong} large />

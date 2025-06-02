@@ -1,4 +1,4 @@
-import { faPlus, faVolumeDown, faVolumeUp, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faPlus, faVolumeDown, faVolumeUp, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -6,13 +6,33 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { NextIcon, PauseIcon, PlayIcon, PreviousIcon, RepeatIcon, ShuffleIcon } from '~/components/Icon';
 import Image from '~/components/Image';
 import style from './Footer.module.scss';
-import images from '~/assets/images';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlaying, setIdSong, pauseSong } from '~/redux/playerSlice';
 
 const cx = classNames.bind(style);
 
 function Footer() {
+    // const [dominantColor, setDominantColor] = useState(null);
+    // const [isDark, setIsDark] = useState(false);
+
+    // useEffect(() => {
+    //     const fac = new FastAverageColor();
+    //     fac.getColorAsync(imageCircle || imageSquare || dataArtist?.imageProfileArtist)
+    //         .then((color) => {
+    //             if (color.isDark) {
+    //                 setIsDark(true);
+    //             }
+    //             setDominantColor(color.hex); // Lấy màu chủ đạo
+    //         })
+    //         .catch((error) => {
+    //             // console.error('Lỗi khi lấy màu:', error);
+    //         });
+    // }, [dataArtist, imageCircle]);
+
+    // const baseColor = tinycolor(dominantColor);
+    // const lightColor = baseColor.saturate(10).toHexString();
+    // const darkerColor = baseColor.desaturate(30).darken(35).toHexString();
+
     const controllerStorage = JSON.parse(localStorage.getItem('controller')) ?? false;
     const volumeStorage = localStorage.getItem('volume');
     // Lấy state từ redux data music
@@ -35,6 +55,8 @@ function Footer() {
     const prevIconRef = useRef();
     const inputVolumeControlRef = useRef();
     const inputVolumeControlBackGroundRef = useRef();
+    const inputProcessBarMobileRef = useRef();
+    const inputProcessBackgroundMobileRef = useRef();
 
     // Hàm xử lý volume
     const renderIconVolumes = useCallback(() => {
@@ -52,7 +74,9 @@ function Footer() {
         //Current state
         const audio = audioRef.current;
         const inputProcessBar = inputProcessBarRef.current;
+        const inputProcessBarMobile = inputProcessBarMobileRef.current;
         const inputProcessBackground = inputProcessBackgroundRef.current;
+        const inputProcessBackgroundMobile = inputProcessBackgroundMobileRef.current;
         const timeCurrent = timeCurrentRef.current;
         const timeDuration = timeDurationRef.current;
         const nextIcon = nextIconRef.current;
@@ -133,8 +157,11 @@ function Footer() {
                     audio.play().catch((err) => {
                         console.warn('Play interrupted', err);
                     });
+                    audio.removeEventListener('canplay', handleCanPlay); // Gỡ sau khi dùng xong
                 };
-                audio.removeEventListener('canplay', handleCanPlay);
+
+                audio.removeEventListener('canplay', handleCanPlay); // Gỡ trước (đề phòng bị gắn nhiều lần)
+                audio.addEventListener('canplay', handleCanPlay); // Gắn lại
             },
             // Hàm set volume
             volumeSong: function () {
@@ -158,7 +185,9 @@ function Footer() {
                             const currentTime = audio.currentTime;
                             const processTime = (currentTime / duration) * 100;
                             inputProcessBackground.style.width = `${processTime}%`;
+                            inputProcessBackgroundMobile.style.width = `${processTime}%`;
                             inputProcessBar.value = `${processTime}`;
+                            inputProcessBarMobile.value = `${processTime}`;
                             _this.loadTimeCurrent();
                         };
                         audio.onended = function () {
@@ -177,6 +206,11 @@ function Footer() {
                             }
                         };
                         inputProcessBar.oninput = function (e) {
+                            if (!isFinite(duration) || duration === 0) return;
+                            const newTime = (e.target.value / 100) * duration;
+                            if (!isNaN(newTime) && isFinite(newTime)) audio.currentTime = newTime;
+                        };
+                        inputProcessBarMobile.oninput = function (e) {
                             if (!isFinite(duration) || duration === 0) return;
                             const newTime = (e.target.value / 100) * duration;
                             if (!isNaN(newTime) && isFinite(newTime)) audio.currentTime = newTime;
@@ -215,6 +249,7 @@ function Footer() {
             audio.ontimeupdate = null;
             audio.onended = null;
             inputProcessBar.oninput = null;
+            inputProcessBarMobile.oninput = null;
             nextIcon.onclick = null;
             prevIcon.onclick = null;
             inputVolumeControl.oninput = null;
@@ -239,10 +274,10 @@ function Footer() {
     }, [data]);
 
     return (
-        <div className={cx('footer')}>
+        <div className={cx('footer', { noAllow: !data })}>
             <div className={cx('wrapper')}>
                 <div className={cx('left-content')}>
-                    <Image src={data?.imageSong || images.noImage} className={cx('img')} />
+                    <Image src={data?.imageSong} className={cx('img')} />
                     <div className={cx('track-details')}>
                         <div className={cx('text-head')}>{data?.name}</div>
                         <div className={cx('text-wrap-name')}>
@@ -256,9 +291,41 @@ function Footer() {
                             ))}
                         </div>
                     </div>
-                    <FontAwesomeIcon icon={faPlus} className={cx('icon-plus')} />
+                    <FontAwesomeIcon icon={faPlus} className={cx('icon-plus', 'd-none d-md-flex')} />
                 </div>
-                <div className={cx('player-container')}>
+                <div className="d-md-none d-flex align-items-center">
+                    {isPlaying ? (
+                        <i
+                            onClick={() => {
+                                dispatch(pauseSong());
+                            }}
+                        >
+                            <PlayIcon className={cx('icon-control-mobile')} />
+                        </i>
+                    ) : (
+                        <i
+                            onClick={() => {
+                                dispatch(setPlaying());
+                            }}
+                        >
+                            <PauseIcon className={cx('icon-control-mobile')} />
+                        </i>
+                    )}
+                </div>
+                <div className={cx('process-bar_mobile', 'd-md-none')}>
+                    <div className={cx('form-process-bar_mobile')}>
+                        <input
+                            ref={inputProcessBarMobileRef}
+                            className={cx('input-process-bar')}
+                            type="range"
+                            min="0"
+                            step="0.1"
+                            max="100"
+                        />
+                        <nav ref={inputProcessBackgroundMobileRef} className={cx('input-process-bar_background')}></nav>
+                    </div>
+                </div>
+                <div className={cx('player-container', 'd-none d-md-flex')}>
                     <div className={cx('control-bar')}>
                         <ShuffleIcon
                             onClick={() => {
@@ -315,7 +382,7 @@ function Footer() {
                         </span>
                     </div>
                 </div>
-                <div className={cx('wrapper-volume')}>
+                <div className={cx('wrapper-volume', 'd-none d-md-flex')}>
                     <div
                         style={{
                             width: 30,

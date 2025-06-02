@@ -8,8 +8,8 @@ function ProtectedRoute({ children, requiredRole }) {
     if (!user) {
         return <Navigate to="/login" />;
     }
-    if (requiredRole && user !== requiredRole) {
-        return <Navigate to="/unauthorized" replace />;
+    if (requiredRole && user !== user) {
+        return <Navigate to="/login" replace />;
     }
     return children;
 }

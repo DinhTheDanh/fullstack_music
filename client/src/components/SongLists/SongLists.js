@@ -10,6 +10,7 @@ import api from '~/ultis/httpsRequest';
 import { UpdateDataSidebarContext } from '~/context/UpdateDataSidebarProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { pauseSong, playSong, setPlaying, setIdSong } from '~/redux/playerSlice';
+import { TailSpin } from 'react-loader-spinner';
 
 const cx = classNames.bind(style);
 function SongLists({ data }) {
@@ -51,7 +52,7 @@ function SongLists({ data }) {
     const containerIcon = useCallback(
         (song, index) => {
             return hoverId !== index ? (
-                <div>
+                <div className="d-none d-md-block">
                     {index == currentSongId && currentSongData[currentSongId]?.name == song?.name && isPlaying ? (
                         <div className={cx('music-icon')}>
                             <div className={cx('bar')}></div>
@@ -70,7 +71,9 @@ function SongLists({ data }) {
                     )}
                 </div>
             ) : (
-                <PauseIcon />
+                <div className="d-none d-md-block">
+                    <PauseIcon />
+                </div>
             );
         },
         [hoverId, isPlaying],
@@ -231,7 +234,8 @@ function SongLists({ data }) {
                                 >
                                     {song.name}
                                 </div>
-                                <div className={cx('track-options')}>
+
+                                <div className={cx('track-options', 'd-none d-md-flex')}>
                                     <div className={cx('duration-song')}>{song.duration}</div>
                                     {hoverId === index && (
                                         <FontAwesomeIcon icon={faEllipsis} className={cx('icon-ellipsis')} />
@@ -242,7 +246,8 @@ function SongLists({ data }) {
                     );
                 })
             ) : (
-                <TailSpin height="80" width="100%" color="#4fa94d" ariaLabel="circles-loading" visible={true} />
+                // <TailSpin height="80" width="100%" color="#4fa94d" ariaLabel="circles-loading" visible={true} />
+                <div></div>
             )}
         </div>
     );
